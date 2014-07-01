@@ -7,7 +7,12 @@ if [ "$1" = "configure" ] ; then
 	groupadd -r dwarf
     fi
     if ! getent passwd dwarf >/dev/null ; then
-	useradd -r -g dwarf -G dwarf,libvirtd -d /var/lib/dwarf \
+	if getent group libvirt >/dev/null ; then
+	    libvirt=libvirt
+	else
+	    libvirt=libvirtd
+	fi
+	useradd -r -g dwarf -G dwarf,${libvirt} -d /var/lib/dwarf \
             -s /sbin/nologin dwarf
     fi
 
