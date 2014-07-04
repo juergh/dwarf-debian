@@ -26,10 +26,14 @@ all: deb
 build:
 	rm -rf build || :
 	mkdir build
+ifeq ($(TGZ),)
 	cd build && \
 		wget -O dwarf_$(VERSION).orig.tar.gz \
 		https://github.com/juergh/dwarf/archive/v$(VERSION).tar.gz && \
 		tar -xzvf dwarf_$(VERSION).orig.tar.gz
+else
+	cd build && tar -xzvf ../$(TGZ)
+endif
 	cp -aR debian build/dwarf-$(VERSION)
 	sed -i 's/RELEASE/$(RELEASE)/g' build/dwarf-$(VERSION)/debian/changelog
 
