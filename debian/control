@@ -6,7 +6,7 @@ Build-Depends: debhelper,
                python,
                python-setuptools
 X-Python-Version: >= 2.6
-Standards-Version: 3.9.4
+Standards-Version: 3.9.5
 
 Package: dwarf
 Architecture: all
