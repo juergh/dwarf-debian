@@ -2,8 +2,8 @@
 
 ### BEGIN INIT INFO
 # Provides:          dwarf
-# Required-Start:    $local_fs libvirt-bin
-# Required-Stop:     $local_fs libvirt-bin
+# Required-Start:    $local_fs $remote_fs libvirt-bin
+# Required-Stop:     $local_fs $remote_fs libvirt-bin
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: OpenStack API on top of libvirt/kvm
@@ -17,31 +17,44 @@ set -e
 
 [ -x /usr/bin/dwarf ] || exit 0
 
+start() {
+    init_is_upstart && exit 1
+    log_daemon_msg "Starting" "dwarf"
+    if start-stop-daemon --start --oknodo --background --chuid dwarf \
+	--pidfile /var/run/dwarf.pid --make-pidfile \
+	--startas /usr/bin/dwarf ; then
+        log_end_msg 0 || true
+    else
+        log_end_msg 1 || true
+    fi
+}
+
+stop() {
+    init_is_upstart && exit 0
+    log_daemon_msg "Stopping" "dwarf"
+    if start-stop-daemon --stop --oknodo \
+	--pidfile /var/run/dwarf.pid ; then
+	[ -e /var/run/dwarf.pid ] && rm /var/run/dwarf.pid
+        log_end_msg 0 || true
+    else
+        log_end_msg 1 || true
+    fi
+}
+
 case "$1" in
     start)
-	init_is_upstart && exit 1
-	log_daemon_msg "Starting" "dwarf"
-	if start-stop-daemon --start --oknodo --background --chuid dwarf \
-	    --pidfile /var/run/dwarf.pid --make-pidfile \
-	    --startas /usr/bin/dwarf ; then
-            log_end_msg 0 || true
-        else
-            log_end_msg 1 || true
-        fi
+	start
 	;;
     stop)
-	init_is_upstart && exit 0
-	log_daemon_msg "Stopping" "dwarf"
-	if start-stop-daemon --stop --oknodo \
-	    --pidfile /var/run/dwarf.pid ; then
-	    [ -e /var/run/dwarf.pid ] && rm /var/run/dwarf.pid
-            log_end_msg 0 || true
-        else
-            log_end_msg 1 || true
-        fi
+	stop
         ;;
+    restart)
+	stop && start
+	;;
+    reload|force-reload)
+	;;
     *)
-	log_action_msg "Usage: /etc/init.d/dwarf {start|stop}" || true
+	log_action_msg "Usage: /etc/init.d/dwarf {start|stop|restart|force-reload}" || true
 	exit 1
 	;;
 esac
