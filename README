@@ -10,5 +10,13 @@ Ubuntu: https://launchpad.net/~juergh/+archive/dwarf
 Note to self
 ============
 
-Upload to launchpad:
-$ dput ppa:juergh/dwarf dwarf_<version>_source.changes
+* Build package:
+  $ make clean
+  $ make source DISTRO=debian RELEASE=jessie
+  $ cd build/dwarf-<version>
+  $ dpkg-buildpackage -us -uc
+  $ dpkg-buildpackage -S -as -us -uc
+
+* Upload to launchpad:
+  $ cd build
+  $ dput ppa:juergh/dwarf dwarf_<version>_source.changes
