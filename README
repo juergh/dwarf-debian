@@ -5,3 +5,10 @@ Debian Packaging files for Dwarf.
 
 Prebuilt packages:
 Ubuntu: https://launchpad.net/~juergh/+archive/dwarf
+
+
+Note to self
+============
+
+Upload to launchpad:
+$ dput ppa:juergh/dwarf dwarf_<version>_source.changes
