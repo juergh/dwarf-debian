@@ -13,42 +13,43 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-RELEASE ?= $(shell lsb_release -cs)
+VERSION := $(shell dpkg-parsechangelog | awk '/^Version:/ { print $$2 }')
+UPSTREAM_VERSION := $(shell echo "$(VERSION)" | sed -e 's,-[^-]*$$,,')
 
-DEB_VERSION = $(shell head -1 debian/changelog | awk '{print $$2}' | \
-	tr -d '()' | sed 's/RELEASE/$(RELEASE)/')
-DEB_NAME = dwarf_$(DEB_VERSION)
+BUILD_ROOT := $(CURDIR)/build
+SOURCE_DIR := $(BUILD_ROOT)/dwarf-$(UPSTREAM_VERSION)
 
-VERSION = $(shell echo $(DEB_VERSION) | awk -F- '{print $$1 }')
+ORIG := dwarf_$(UPSTREAM_VERSION).orig.tar.gz
 
-all: deb
+help:
+	@echo "You need to specify a build rule"
 
-build:
-	rm -rf build || :
-	mkdir build
-ifeq ($(TGZ),)
-	cd build && \
-		wget -O dwarf_$(VERSION).orig.tar.gz \
-		https://github.com/juergh/dwarf/archive/v$(VERSION).tar.gz && \
-		tar -xzvf dwarf_$(VERSION).orig.tar.gz
-else
-	cd build && tar -xzvf ../$(TGZ)
-endif
-	cp -aR debian build/dwarf-$(VERSION)
-	sed -i 's/RELEASE/$(RELEASE)/g' build/dwarf-$(VERSION)/debian/changelog
+$(BUILD_ROOT)/$(ORIG):
+	install -d $(BUILD_ROOT)
+	wget -O $(BUILD_ROOT)/$(ORIG) \
+	    https://github.com/juergh/dwarf/archive/v$(UPSTREAM_VERSION).tar.gz
+	touch $@
 
-deb: build
-	cd build/dwarf-$(VERSION) && debuild -uc -us
+$(SOURCE_DIR)/debian/changelog: $(BUILD_ROOT)/$(ORIG)
+	tar -C $(BUILD_ROOT) -xzvf $(BUILD_ROOT)/$(ORIG)
+	cp -aR debian $(SOURCE_DIR)
+	touch $@
 
-src: build
-	cd build/dwarf-$(VERSION) && debuild -S -sa
-
-ppa: src
-	cd build && dput ppa:juergh/dwarf $(DEB_NAME)_source.changes
+source: $(SOURCE_DIR)/debian/changelog
 
 clean:
-	@find . \( -name '*~' \) -type f -print | \
-		xargs rm -f
-	@rm -rf build || :
+	@find . \( -name '*~' \) -type f -print | xargs rm -f
+	@rm -rf $(BUILD_ROOT)
 
-.PHONY: build
+deb: $(SOURCE_DIR)/debian/changelog
+	cd $(SOURCE_DIR) && \
+	    debian/rules debian/control && \
+	    dpkg-buildpackage -us -uc
+
+src: $(SOURCE_DIR)/debian/changelog
+	cd $(SOURCE_DIR) && \
+	    debian/rules debian/control && \
+	    dpkg-buildpackage -uc -us -S -sa
+
+#ppa:
+#	cd $(BUILD_ROOT) && dput ppa:juergh/dwarf $(CHANGES)

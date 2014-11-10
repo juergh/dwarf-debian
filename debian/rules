@@ -1,8 +1,12 @@
 #!/usr/bin/make -f
 
+DISTRO := $(shell lsb_release -is)
+RELEASE := $(shell lsb_release -cs)
+
 BUILD_SYSTEM = '--buildsystem=python_distutils'
 
 %:
+	@echo Debug: $@
 	dh $@ --with python2
 
 override_dh_auto_build:
@@ -12,3 +16,18 @@ override_dh_auto_test:
 
 override_dh_auto_install:
 	dh_auto_install $(BUILD_SYSTEM)
+
+debian/control:
+	# Create the control file
+	if [ "$(DISTRO)" = "Debian" ] ; then \
+	    mv debian/control.debian debian/control ; \
+	elif [ "$(DISTRO)" = "Ubuntu" ] ; then \
+	    mv debian/control.ubuntu debian/control ; \
+	    rm debian/dwarf.init ; \
+	else \
+	    echo "Unsupported distro: $(DISTRO)" && false ; \
+	fi
+	rm -f debian/control.*
+
+	# Fix the changelog
+	sed -i "s/RELEASE/$(RELEASE)/g" debian/changelog

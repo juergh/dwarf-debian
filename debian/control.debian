@@ -3,6 +3,7 @@ Maintainer: Juerg Haefliger <juerg.haefliger@hp.com>
 Section: python
 Priority: optional
 Build-Depends: debhelper,
+               lsb-release,
                python,
                python-setuptools
 X-Python-Version: >= 2.6
@@ -13,9 +14,10 @@ Architecture: all
 Depends: ${misc:Depends},
          ${python:Depends},
          adduser,
-         libvirt-bin,
+         iptables,
+         libvirt-daemon,
+         libvirt-daemon-system,
 	 python-bottle,
-	 python-cheetah,
 	 python-m2crypto,
 	 python-simplejson,
 	 python-libvirt,
