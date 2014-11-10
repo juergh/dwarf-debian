@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+DISTRO ?= $(shell lsb_release -is | tr '[:upper:]' '[:lower:]')
+RELEASE ?= $(shell lsb_release -cs | tr '[:upper:]' '[:lower:]')
+
 VERSION := $(shell dpkg-parsechangelog | awk '/^Version:/ { print $$2 }')
 UPSTREAM_VERSION := $(shell echo "$(VERSION)" | sed -e 's,-[^-]*$$,,')
 
@@ -28,28 +31,35 @@ $(BUILD_ROOT)/$(ORIG):
 	install -d $(BUILD_ROOT)
 	wget -O $(BUILD_ROOT)/$(ORIG) \
 	    https://github.com/juergh/dwarf/archive/v$(UPSTREAM_VERSION).tar.gz
-	touch $@
 
-$(SOURCE_DIR)/debian/changelog: $(BUILD_ROOT)/$(ORIG)
+$(SOURCE_DIR)/debian/control: $(BUILD_ROOT)/$(ORIG)
+	# Unpack the source
 	tar -C $(BUILD_ROOT) -xzvf $(BUILD_ROOT)/$(ORIG)
 	cp -aR debian $(SOURCE_DIR)
-	touch $@
 
-source: $(SOURCE_DIR)/debian/changelog
+	# Create the control file
+	cat $(SOURCE_DIR)/debian/control.d/$(DISTRO) > \
+	    $(SOURCE_DIR)/debian/control
+
+	# Fix the changelog
+	sed -i "s/RELEASE/$(RELEASE)/g" $(SOURCE_DIR)/debian/changelog
+
+	# Distro-specific cleanups
+	if [ "$(DISTRO)" = "ubuntu" ] ; then \
+	    rm -f $(SOURCE_DIR)debian/dwarf.init ; \
+	fi
+
+source: $(SOURCE_DIR)/debian/control
 
 clean:
 	@find . \( -name '*~' \) -type f -print | xargs rm -f
+	@rm -rf $(SOURCE_DIR)
+
+deepclean: clean
 	@rm -rf $(BUILD_ROOT)
 
-deb: $(SOURCE_DIR)/debian/changelog
-	cd $(SOURCE_DIR) && \
-	    debian/rules debian/control && \
-	    dpkg-buildpackage -us -uc
+deb: source
+	cd $(SOURCE_DIR) && dpkg-buildpackage -us -uc
 
-src: $(SOURCE_DIR)/debian/changelog
-	cd $(SOURCE_DIR) && \
-	    debian/rules debian/control && \
-	    dpkg-buildpackage -uc -us -S -sa
-
-#ppa:
-#	cd $(BUILD_ROOT) && dput ppa:juergh/dwarf $(CHANGES)
+src: source
+	cd $(SOURCE_DIR) && dpkg-buildpackage -uc -us -S -sa
