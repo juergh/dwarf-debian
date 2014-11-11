@@ -15,7 +15,7 @@ Note to self
   $ make source DISTRO=debian RELEASE=jessie
   $ cd build/dwarf-<version>
   $ dpkg-buildpackage -us -uc
-  $ dpkg-buildpackage -S -as -us -uc
+  $ dpkg-buildpackage -S -sa -us -uc
 
 * Upload to launchpad:
   $ cd build
