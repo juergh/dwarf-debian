@@ -49,6 +49,9 @@ $(SOURCE_DIR)/debian/control: $(BUILD_ROOT)/$(ORIG)
 	    rm -f $(SOURCE_DIR)debian/dwarf.init ; \
 	fi
 
+	@echo "DISTRO = $(DISTRO)"
+	@echo "RELEASE = $(RELEASE)"
+
 source: $(SOURCE_DIR)/debian/control
 
 clean:
