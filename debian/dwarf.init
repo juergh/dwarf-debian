@@ -2,8 +2,8 @@
 
 ### BEGIN INIT INFO
 # Provides:          dwarf
-# Required-Start:    $local_fs $remote_fs libvirt-bin
-# Required-Stop:     $local_fs $remote_fs libvirt-bin
+# Required-Start:    $local_fs $remote_fs libvirtd
+# Required-Stop:     $local_fs $remote_fs libvirtd
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: OpenStack API on top of libvirt/kvm
