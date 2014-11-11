@@ -1,5 +1,5 @@
 description "OpenStack API on top of libvirt/kvm"
-author "Juerg Haefliger <juerg.haefliger@hp.com>"
+author "Juerg Haefliger <juergh@gmail.com>"
 
 start on (local-filesystem and net-device-up IFACE=lo) or (started libvirt-bin)
 

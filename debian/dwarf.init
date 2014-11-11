@@ -9,7 +9,7 @@
 # Short-Description: OpenStack API on top of libvirt/kvm
 ### END INIT INFO
 
-# Authors: Juerg Haefliger <juerg.haefliger@hp.com>
+# Authors: Juerg Haefliger <juergh@gmail.com>
 
 set -e
 

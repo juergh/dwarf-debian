@@ -1,5 +1,5 @@
 Source: dwarf
-Maintainer: Juerg Haefliger <juerg.haefliger@hp.com>
+Maintainer: Juerg Haefliger <juergh@gmail.com>
 Section: python
 Priority: optional
 Build-Depends: debhelper,
@@ -7,7 +7,8 @@ Build-Depends: debhelper,
                python,
                python-setuptools
 X-Python-Version: >= 2.6
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
+Homepage: https://github.com/juergh/dwarf
 
 Package: dwarf
 Architecture: all
