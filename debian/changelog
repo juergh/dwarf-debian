@@ -1,3 +1,13 @@
+dwarf (0.1.6-0~RELEASE) RELEASE; urgency=low
+
+  * Return true server state from libvirt rather than the database
+  * Add server start and stop actions, fix reboot action
+  * Create a dedicated network bridge dwbr0
+  * Add more config options
+  * Various fixes and code refactoring
+
+ -- Juerg Haefliger <juerg.haefliger@hp.com>  Tue, 11 Nov 2014 08:44:59 +0100
+
 dwarf (0.1.5-0~RELEASE) RELEASE; urgency=low
 
   * Rebase to v0.1.5
