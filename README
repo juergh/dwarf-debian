@@ -1,10 +1,11 @@
 dwarf-debian
 ============
 
-Debian Packaging files for Dwarf.
+Debian packaging files for Dwarf.
 
 Prebuilt packages:
 Ubuntu: https://launchpad.net/~juergh/+archive/dwarf
+Debian: https://mentors.debian.net/package/dwarf
 
 
 Note to self
@@ -14,9 +15,13 @@ Note to self
   $ make clean
   $ make source DISTRO=debian RELEASE=jessie
   $ cd build/dwarf-<version>
-  $ dpkg-buildpackage -us -uc
-  $ dpkg-buildpackage -S -sa -us -uc
+  $ dpkg-buildpackage
+  $ dpkg-buildpackage -S -sa
 
-* Upload to launchpad:
+* Upload to Ubuntu launchpad:
   $ cd build
   $ dput ppa:juergh/dwarf dwarf_<version>_source.changes
+
+* Upload to Debian mentors:
+  $ cd build
+  $ dput mentors dwarf_<version>_source.changes
