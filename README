@@ -15,13 +15,12 @@ Note to self
   $ make clean
   $ make source DISTRO=debian RELEASE=jessie
   $ cd build/dwarf-<version>
-  $ dpkg-buildpackage
   $ dpkg-buildpackage -S -sa
 
-* Upload to Ubuntu launchpad:
+* Upload source package to Ubuntu launchpad:
   $ cd build
   $ dput ppa:juergh/dwarf dwarf_<version>_source.changes
 
-* Upload to Debian mentors:
+* Upload source package to Debian mentors:
   $ cd build
   $ dput mentors dwarf_<version>_source.changes
