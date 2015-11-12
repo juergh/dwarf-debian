@@ -3,6 +3,7 @@ Maintainer: Juerg Haefliger <juergh@gmail.com>
 Section: python
 Priority: optional
 Build-Depends: debhelper,
+               dh-python,
                lsb-release,
                python,
                python-setuptools
