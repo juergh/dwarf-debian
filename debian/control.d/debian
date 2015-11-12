@@ -16,6 +16,7 @@ Architecture: all
 Depends: ${misc:Depends},
          ${python:Depends},
          adduser,
+         genisoimage,
          iptables,
          libvirt-daemon,
          libvirt-daemon-system,
