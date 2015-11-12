@@ -20,9 +20,9 @@ VERSION := $(shell dpkg-parsechangelog | awk '/^Version:/ { print $$2 }')
 UPSTREAM_VERSION := $(shell echo "$(VERSION)" | sed -e 's,-[^-]*$$,,')
 
 BUILD_ROOT := $(CURDIR)/build
-SOURCE_DIR := $(BUILD_ROOT)/dwarf-$(UPSTREAM_VERSION)
 
-ORIG := dwarf_$(UPSTREAM_VERSION).orig.tar.gz
+SOURCE_DIR = $(BUILD_ROOT)/dwarf-$(UPSTREAM_VERSION)
+ORIG = dwarf_$(UPSTREAM_VERSION).orig.tar.gz
 
 help:
 	@echo "You need to specify a build rule"
@@ -66,3 +66,31 @@ deb: source
 
 src: source
 	cd $(SOURCE_DIR) && dpkg-buildpackage -uc -us -S -sa
+
+tot: UPSTREAM_VERSION := $(shell date +'%Y%m%d')
+tot:
+	install -d $(BUILD_ROOT)
+	rm -rf $(SOURCE_DIR)
+
+	wget -O $(BUILD_ROOT)/dwarf.tar.gz \
+	    https://github.com/juergh/dwarf/archive/master.tar.gz
+	tar -C $(BUILD_ROOT) -xzvf $(BUILD_ROOT)/dwarf.tar.gz
+	rm $(BUILD_ROOT)/dwarf.tar.gz
+	mv $(BUILD_ROOT)/dwarf-master $(SOURCE_DIR)
+
+	tar -C $(BUILD_ROOT) -czvf $(BUILD_ROOT)/$(ORIG) $(SOURCE_DIR)
+	cp -aR debian $(SOURCE_DIR)
+
+	# Create the control file
+	cat $(SOURCE_DIR)/debian/control.d/$(DISTRO) > \
+	    $(SOURCE_DIR)/debian/control
+
+	# Create a dummy changelog
+	( echo 'dwarf ($(UPSTREAM_VERSION)-1) UNRELEASED; urgency=low' ; \
+	  echo ; \
+	  echo '  * top-of-tree' ; \
+	  echo ; \
+	  echo ' -- ${DEBFULLNAME} <${DEBEMAIL}>  $(shell date -R)' \
+	) > $(SOURCE_DIR)/debian/changelog
+
+	cd $(SOURCE_DIR) && dpkg-buildpackage -us -uc
