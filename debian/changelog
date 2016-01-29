@@ -1,3 +1,9 @@
+dwarf (0.2.0-1~RELEASE) RELEASE; urgency=low
+
+  * Rebase to upstream v0.2.0
+
+ -- Juerg Haefliger <juergh@gmail.com>  Fri, 29 Jan 2016 18:16:51 +0100
+
 dwarf (0.1.7-1~RELEASE) RELEASE; urgency=low
 
   * Rebase to upstream v0.1.7
