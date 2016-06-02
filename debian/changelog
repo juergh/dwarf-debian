@@ -1,3 +1,9 @@
+dwarf (0.2.1-1~RELEASE) RELEASE; urgency=low
+
+  * Rebase to upstream v0.2.1
+
+ -- Juerg Haefliger <juerg.haefliger@hpe.com>  Thu, 02 Jun 2016 17:02:52 +0200
+
 dwarf (0.2.0-1~RELEASE) RELEASE; urgency=low
 
   * Rebase to upstream v0.2.0
